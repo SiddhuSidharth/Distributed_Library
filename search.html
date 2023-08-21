@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="utf-8"/>
+  <title>Search for required books</title>
+  <link rel="stylesheet" href="./style/search.css">
+</head>
+<body>
+  <div class="search">
+    <div class="icon"></div>
+    <div class="input">
+      <form action="" method = "post"><input type="text" name = "bookname" placeholder="Search " id="mysearch"></form>
+    </div>
+    <span class="clear" onclick="document.getElementById('mysearch').value = ''"></span>
+  </div>
+
+  <script>
+    const icon = document.querySelector('.icon');
+    const search = document.querySelector('.search');
+    icon.onclick = function(){
+      search.classList.toggle('active')
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body
+{
+    color:aliceblue;
+    background-color:#3C3A47;
+}
+
+h1
+{
+    margin-top:18rem;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: Poppins, sans-serif;
+    letter-spacing:5px;
+    font-weight: 200;
+    font-size: 50px;
+}
+
+h2
+{
+    text-align: center;
+    text-transform: uppercase;
+    font-family: Poppins, sans-serif;
+    letter-spacing:5px;
+    font-weight: 200;
+    margin-bottom: 10rem;
+    margin-top: 2rem;
+}
+
+button
+{
+    width:15rem;
+    height:5rem;
+    border-radius: 5px;
+    border:none;
+    background-color:aliceblue;
+    font-size:2rem;
+}
+
+button:hover
+{
+    width: 17rem;
+    height: 6rem;
+}
+a
+{
+    text-decoration: none;
+    color: #3C3A47;
+}
+
+.btn
+{
+    display: grid;
+    grid-template-columns:15rem 15rem;
+    gap: 10rem;
+    justify-content:center;
+
+}

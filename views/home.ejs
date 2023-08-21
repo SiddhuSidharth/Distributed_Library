@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" href="./style/home.css"> 
+</head>
+<body>
+    <div class="header">
+        <a class="b" href="/enterbooks?name=<%=name%>"><button >Enter books</button></a>
+        <a href="search?name=<%=name%> "><button>Search</button></a>
+        <a href="/myprofile?name=<%=name%> "><button>Profile</button></a>
+        <a href="/requestlist?name=<%=name%>"><button>Requests</button></a>
+        <div class = "logout"><a href="/login"><button>Logout</button></a></div>
+    </div>
+    
+    <section id = "sec1">
+    <div class = "newcontainer">
+        <h1>Welcome to dislib</h1>
+    <hr>
+    <h2>The books available are</h2>
+    </div>
+    </section>
+        
+
+   
+    <% books.forEach(function(book){%>
+    
+
+            <div class="containt">
+
+                <h3>Book name: <%= book.bookname%></h3>
+                <p><strong>Author: <%= book.author%></strong></p><br>
+                <p><strong>Owner: <a href="/profile?name=<%= book.owner%>"><%= book.owner%> </a></strong></p>
+                <a href="/request?name=<%=name%>&bookname=<%=book.bookname%>&ownername=<%=book.owner%> "><button>Request</button></a>   
+                <br><br>
+            </div>
+                 
+            
+        <%}) %> 
+    </div>
+      
+    
+
+        
+          
+</body>
+

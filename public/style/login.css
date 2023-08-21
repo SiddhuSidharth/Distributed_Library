@@ -1,0 +1,67 @@
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;  
+    font-family: Poppins, sans-serif;
+}
+
+
+form
+{
+    width: 60%;
+    max-width:640px;
+}
+
+body
+{
+    color:aliceblue;
+    background-color:#3C3A47;   
+}
+
+h1
+{
+    margin: 6rem 0;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing:5px;
+    font-weight: 200;
+    font-size: 50px;
+}
+
+form
+{
+    text-transform: uppercase;
+    color:aliceblue;
+    margin-bottom: 8px;
+    letter-spacing:2px;
+    margin-left: auto;
+    margin-right: auto;
+    
+}
+
+form input
+{
+    background-color:rgba(255, 255, 255, 0.1);
+    border:none;
+    color:aliceblue;
+    margin-bottom: 25px;
+    width: 640px;
+    height:64px;
+    font-size: 20px;
+}
+
+form button 
+{
+    color: white;
+    width: 640px;
+    height:64px;
+    background-color:#3C3A47;
+    border:2px solid;
+    border-color:rgb(189, 189, 189);
+    font-weight:900;
+    letter-spacing:-1px;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing:5px;
+
+}

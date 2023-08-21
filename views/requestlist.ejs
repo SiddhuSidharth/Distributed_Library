@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Search result</title>
+    <link rel="stylesheet" href="./style/requestlist.css">
+</head>
+    <body>
+
+        <div class="header">
+            <a class="b" href="/enterbooks"><button >Enter books</button></a>
+            <a href="search?name=<%=name%> "><button>Search</button></a>
+            <a href="/myprofile?name=<%=name%> "><button>Profile</button></a>
+            <a href="/requestlist?name=<%=name%>"><button>Requests</button></a>
+            <div class = "logout"><a href="/login"><button>Logout</button></a></div>
+        </div>
+        <br>
+        <div class = "homebutton"><a href="/home?name=<%=name%>"><button>Home</button></a></div>
+        <div class = "leta">
+            <h1>Requests for your books: </h1>
+            <br>
+        </div>
+            
+            <% requests.forEach(function(request){%>
+    
+
+                <div class="containt">
+    
+                    <h2>Book name: <%= request.bookname%></h2>
+                    <p><strong>Requested by: </strong><a href="/profile?name=<%= request.name%>"><%= request.name%></a></p><br>
+                    <br><br>
+                </div>
+                     
+                
+            <%}) %> 
+
+            
+    </body>
+</html>

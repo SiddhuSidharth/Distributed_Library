@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Search result</title>
+    <link rel="stylesheet" href="./style/search1.css">
+</head>
+    <body>
+        <a href="/home?name=<%=name%> "><button>Home</button></a>
+        <div class = "leta">
+            <h1>Results for search term: </h1>
+                    <h2>
+                        <li><%= book.bookname%></li>
+                    </h2>
+                    <ul>
+                        <li><%= book.author%> </li>
+                        <a href="/profile?name=<%=book.owner%>"><li><%= book.owner%> </li></a>
+                        <li><%= book.edition%> </li>
+                        <li><%= book.coursename%> </li>
+                        <br>
+                        <a href="/request?name=<%=name%>&bookname=<%=book.bookname%>&ownername=<%=book.owner%> "><button>Request</button></a>   
+                    </ul>
+        </div>
+            
+    </body>
+</html>

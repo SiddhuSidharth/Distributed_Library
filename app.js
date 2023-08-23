@@ -2,7 +2,10 @@ const express = require('express');
 const app = express();
 const bp = require("body-parser");
 app.use(bp.urlencoded({extended: true}));
-app.listen('https://distributed-library.onrender.com/', function() {
+// app.listen('https://distributed-library.onrender.com/', function() {
+//     console.log("running...");
+// });
+app.listen(3000, function() {
     console.log("running...");
 });
 
@@ -314,53 +317,53 @@ app.post("/login", function(req, res){
     })
 
 })
-app.post("/register", async function(req, res){
-    var name = req.body.fname;
-    var email = req.body.email;
-    var pswd = req.body.pswd;
-    var phno = req.body.phno;
+// app.post("/register", async function(req, res){
+//     var name = req.body.fname;
+//     var email = req.body.email;
+//     var pswd = req.body.pswd;
+//     var phno = req.body.phno;
 
-    try {
-        await usermodel.create({
-            name: name,
-            email: email,
-            pswd: pswd,
-            phno: phno
-        });
-
-        console.log("Data inserted successfully!");
-        res.redirect("/login");
-    } catch (err) {
-        console.error("Error inserting data:", err);
-        // Handle error gracefully and respond to the client
-        res.status(500).send("Internal Server Error");
-    }
-});
-
-
-// app.post("/register", function(req, res){
-
-//     var name = req.body.fname
-//     var email = req.body.email
-//     var pswd  = req.body.pswd
-//     var phno = req.body.phno
-//     var data = {
-//         name: name,
-//         email: email,
-//         pswd: pswd,
-//         phno: phno
-//     };
-//     db.collection("users").insertOne(
-//         data, (err, collection) => {
-//           if (err) {
-//             throw err;
-//           }
-//           console.log("Data inserted successfully!");
-//           res.redirect("/login")
-//           return
+//     try {
+//         await usermodel.create({
+//             name: name,
+//             email: email,
+//             pswd: pswd,
+//             phno: phno
 //         });
 
-// })
+//         console.log("Data inserted successfully!");
+//         res.redirect("/login");
+//     } catch (err) {
+//         console.error("Error inserting data:", err);
+//         // Handle error gracefully and respond to the client
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
+
+
+app.post("/register", function(req, res){
+
+    var name = req.body.fname
+    var email = req.body.email
+    var pswd  = req.body.pswd
+    var phno = req.body.phno
+    var data = {
+        name: name,
+        email: email,
+        pswd: pswd,
+        phno: phno
+    };
+    db.collection("users").insertOne(
+        data, (err, collection) => {
+          if (err) {
+            throw err;
+          }
+          console.log("Data inserted successfully!");
+          res.redirect("/login")
+          return
+        });
+
+})
 
 app.post("/enterbooks", function(req, res){
     console.log(req.body)

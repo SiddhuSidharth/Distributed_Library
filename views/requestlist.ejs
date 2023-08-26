@@ -20,7 +20,7 @@
             <br>
         </div>
             
-            <% requests.forEach(function(request){%>
+            <!-- <% requests.forEach(function(request){%>
     
 
                 <div class="containt">
@@ -31,7 +31,22 @@
                 </div>
                      
                 
-            <%}) %> 
+            <%}) %>  -->
+            <% requests.forEach(function(request) { %>
+                <div class="containt">
+                    <h2>Book name: <%= request.bookname %></h2>
+                    <p><strong>Requested by: <%= request.name %></strong></p>
+                    <% if (!request.approved) { %>
+                        <form action="/approve-request" method="post">
+                            <input type="hidden" name="requestId" value="<%= request._id %>">
+                            <input type="hidden" name="name" value="<%= name %>">
+                            <button type="submit">Approve</button>
+                        </form>
+                    <% } %>
+                </div>
+            <% }) %>
+            
+            
 
             
     </body>

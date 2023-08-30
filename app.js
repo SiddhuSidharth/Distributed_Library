@@ -1,10 +1,19 @@
 const express = require('express');
-const app = express();
+
+const session=require("express-session");
 const bp = require("body-parser");
+const app = express();
 app.use(bp.urlencoded({extended: true}));
 // app.listen('https://distributed-library.onrender.com/', function() {
 //     console.log("running...");
 // });
+
+// Configure session middleware
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: true
+}));
 app.listen(3000, function() {
     console.log("running...");
 });
@@ -22,20 +31,36 @@ app.use(express.json())
 app.set("view engine", "ejs")
 
 const userschema = mongoose.Schema({
-    name: {type: String, required: true},
-    email: {type: String, required: true},
-    pswd: {type: String, required: true},
-    phno: {type: String, required: true},
-    notifications: [String] 
-    
-})
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    pswd: { type: String, required: true },
+    phno: { type: String, required: true },
+    notifications: [String],
+    booksTaken: [{
+        bookname: String,
+        edition: String,
+        author: String,
+        coursename: String,
+        owner:String,
+        returned: { type: Boolean, default: false }
+    }],
+    // returnedBooks: [{
+    //     bookname: String,
+    //     edition: String,
+    //     author: String,
+    //     coursename: String,
+    //     takenDate: Date,
+    //     returnedDate: Date
+    // }]
+});
 
 const requestschema = mongoose.Schema({
-    name: {type: String, required: true},
-    bookname: {type: String, required: true},
-    ownername: {type: String, required: true},
-    
-})
+    name: { type: String, required: true },
+    bookname: { type: String, required: true },
+    ownername: { type: String, required: true },
+    approved: { type: Boolean, default: false } // Add an 'approved' flag
+});
+
 
 const booksschema = mongoose.Schema({
     bookname: {type: String, required: true},
@@ -43,6 +68,7 @@ const booksschema = mongoose.Schema({
     author: {type: String, required: true},
     owner: {type: String, required: true},
     coursename: {type: String, required: true},
+    
 
 })
 
@@ -95,39 +121,71 @@ app.get("/profile", function(req, res)
 )
 
 
-app.get("/myprofile", function(req, res)
-    {
-        var query = req.query;
-        // console.log(query.name)
-        var profilename = query.name
-        // console.log(profilename)
-        usermodel.find(function(err, val){
-            if(err)
-            {
-                console.log("ERRROR!!!!!!!!!")
-                console.log(err)
-            }
-            else
-            {
-                for(let i = 0; i<val.length; i++)
-                {
-                    var temp = val[i]
+app.get("/myprofile", async function(req, res) {
+    var query = req.query;
+    var profilename = query.name;
 
-                    if(temp.name === profilename)
-                    {
-                         res.render("myprofile", {"temp": temp})
-                        return
-                    }
-    
-                }
-                
-                res.sendFile(path.join(__dirname, "./404.html"));
-                return
-            }
-        })
+    try {
+        const user = await usermodel.findOne({ name: profilename }).populate('booksTaken');
         
+        if (!user) {
+            console.log("User not found");
+            return res.sendFile(path.join(__dirname, "./404.html"));
+        }
+
+        res.render("myprofile", { "temp": user });
+    } catch (err) {
+        console.log("Error fetching user:", err);
+        res.sendFile(path.join(__dirname, "./404.html"));
     }
-)
+});
+app.post("/return-book", async function(req, res) {
+    const name = req.body.name;
+    const bookId = req.body.bookId;
+
+    try {
+        // Find the user by name
+        const user = await usermodel.findOne({ name: name });
+        
+        if (!user) {
+            console.log("User not found");
+            return res.redirect(`/myprofile?name=${encodeURIComponent(name)}`);
+        }
+
+        // Find the book in the user's booksTaken array
+        const bookIndex = user.booksTaken.findIndex(book => book._id.toString() === bookId);
+        if (bookIndex === -1) {
+            console.log("Book not found in user's profile");
+            return res.redirect("/myprofile?name=" + name);
+        }
+
+        // Get the book to be returned
+        const returnedBook = user.booksTaken[bookIndex];
+
+        // Remove the book from the user's profile
+        user.booksTaken.splice(bookIndex, 1);
+        await user.save();
+        returnedBook.returned = true;
+        // Create a new book object to be inserted into the bookmodel collection
+        const newBook = {
+            bookname: returnedBook.bookname,
+            edition: returnedBook.edition,
+            author: returnedBook.author,
+            owner:returnedBook.owner,
+            coursename: returnedBook.coursename
+        };
+
+        // Add the returned book back to the bookmodel collection
+        await bookmodel.create(newBook);
+
+        console.log("Book returned:", returnedBook);
+        res.redirect(`/myprofile?name=${encodeURIComponent(name)}`);
+    } catch (err) {
+        console.log("Error returning book:", err);
+        res.redirect(`/myprofile?name=${encodeURIComponent(name)}`);
+    }
+});
+
 
 
 app.get("/request", function(req, res)
@@ -190,30 +248,7 @@ app.get("/request", function(req, res)
 
 
 
-// app.get("/requestlist", function(req, res)
-//     {
-//         var name = req.query.name
-//         var newdata;
-//         requestmodel.find(function(err, requests){
-//             if(err)
-//             {
-//                 console.log("ERRROR!!!!!!!!!")
-//                 console.log(err)
-//             }
-//             else
-//             {
-//                 newdata = requests
-//                 newdata = newdata.filter(function(val){
-//                     return val.ownername === name;
-//                 })
-//                 res.render("requestlist", {"requests": newdata, "name": name})
-//                 return
-//             }
-//         })
-        
-        
-//     }
-// )
+
 app.get("/requestlist", async function(req, res) {
     var name = req.query.name;
     var newdata;
@@ -228,14 +263,22 @@ app.get("/requestlist", async function(req, res) {
 
 
 
+
 app.post("/approve-request", async function(req, res) {
     const requestId = req.body.requestId;
     const name = req.body.name;
 
     try {
-        const request = await requestmodel.findByIdAndUpdate(requestId, { approved: true }, { new: true });
+        const request = await requestmodel.findByIdAndDelete(requestId);
         if (!request) {
             console.log("Request not found");
+            return res.redirect("/requestlist?name=" + name);
+        }
+
+        // Get the book to be approved
+        const bookToApprove = await bookmodel.findOne({ bookname: request.bookname, owner: request.ownername });
+        if (!bookToApprove) {
+            console.log("Book not found");
             return res.redirect("/requestlist?name=" + name);
         }
 
@@ -243,16 +286,34 @@ app.post("/approve-request", async function(req, res) {
         const user = await usermodel.findOneAndUpdate(
             { name: request.name },
             { $push: { notifications: "Your request has been approved for " + request.bookname } },
-            { new: true } // This option returns the updated user document
+            { new: true }
         );
 
-        console.log("Request approved:", request);
+        // Add the approved book to the user's profile
+        console.log(bookToApprove);
+        await usermodel.findOneAndUpdate(
+        
+            { name: request.name },
+            { $push: { booksTaken: bookToApprove.toObject() }},
+            { new: true }
+        );
+        
+
+        // Delete the book from the book collection
+        await bookmodel.findOneAndDelete({ _id: bookToApprove._id });
+
+        console.log("Request approved and book deleted:", request);
         res.redirect("/requestlist?name=" + name);
     } catch (err) {
         console.log("Error approving request:", err);
         res.redirect("/requestlist?name=" + name);
     }
 });
+
+
+
+
+
 
 app.get("/login", function(req, res)
     {
@@ -394,15 +455,17 @@ app.post("/register", function(req, res){
         pswd: pswd,
         phno: phno
     };
-    db.collection("users").insertOne(
-        data, (err, collection) => {
-          if (err) {
-            throw err;
-          }
-          console.log("Data inserted successfully!");
-          res.redirect("/login")
-          return
-        });
+    usermodel.create(data, (err, user) => {
+        if (err) {
+            console.error("Error inserting data:", err);
+            // Handle error gracefully and respond to the client
+            res.status(500).send("Internal Server Error");
+        } else {
+            console.log("Data inserted successfully!");
+            res.redirect("/login");
+        }
+    });
+    
 
 })
 
@@ -439,7 +502,16 @@ app.post("/enterbooks", function(req, res){
 app.post("/", function(req, res){
     console.log(req.body)
 })
-
+app.get("/logout", function(req, res) {
+    // Assuming you're using session middleware
+    req.session.destroy(function(err) {
+        if (err) {
+            console.log("Error logging out:", err);
+        } else {
+            res.redirect("/login");
+        }
+    });
+});
 
 
 
@@ -454,7 +526,7 @@ app.post("/", function(req, res){
 // });
 // var db = mongoose.connection;
 
-const atlasConnectionString = "mongodb+srv://Siddhu:SMltgZVEYovuP6VB@cluster0.mhgxld4.mongodb.net/?retryWrites=true&w=majority";
+const atlasConnectionString = "mongodb+srv://Siddhu:iA8I1LvGIqpwxJUT@cluster0.txgrwjo.mongodb.net/?retryWrites=true&w=majority";
 //mongodb+srv://Sidharth:mbeL0CwdentOcvM5@cluster0.b9cftsu.mongodb.net/
 //SMltgZVEYovuP6VB
 mongoose.connect(atlasConnectionString, {
@@ -468,6 +540,8 @@ mongoose.connect(atlasConnectionString, {
 });
 
 var db = mongoose.connection;
+//iA8I1LvGIqpwxJUT
+
 
 
 

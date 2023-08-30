@@ -1,69 +1,83 @@
-*{
-    box-sizing: border-box;
-      font-family: sans-serif;
-  
-  }
-
-h1{
-    text-align:center;
-    font-family: sans-serif;
-}
-body{
-    justify-content: center;
-    background-image: url("./bookshelf.jpg");
-    background-position: center;
-    background-size: 100%;
-    background-repeat:no-repeat;
-    height: 100vh;
-    margin-left:auto;
-    margin-right: auto;
-    text-align: center;
-    background-size: 100%;
-    background-repeat:no-repeat;
-    margin:0px 0px;
-
+* {
+  box-sizing: border-box;
+  font-family: sans-serif;
 }
 
-
-.header{
-    /* width: 100%; */
-    display:flex;
-    gap:10px;
-    background-color: #15172b;
-    height: 80px;
-    align-items: center;
-    /* margin-bottom: 50px; */
-    /* padding: 100px; */
-  }
-
-.h1div
-{
-    margin-top: 20px;
-    padding-top: 20px;
-    border: 1px solid black;
-    margin-bottom: 5px;
-    width: 500px;
-    margin-left:auto;
-    margin-right: auto;
-    background-color: #15172b;
-    border-radius: 20px;
-    color: white;
-    border-radius: 30px;
+h1 {
+  text-align: center;
+  font-family: sans-serif;
 }
-.logout
-{
-  margin-left: 1210px;
+
+body {
+  justify-content: center;
+  background-image: url("./bookshelf.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  margin: 0;
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  gap: 10px;
+  background-color: #15172b;
+  height: 80px;
+  align-items: center;
+}
+
+.logout {
+  margin-left: auto;
 }
 
 button {
-    background-color: #08d; 
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    border-radius:20px ;
-  }
-  
+  background-color: #08d;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 20px;
+}
+
+.ret {
+  background-color: rgb(20, 55, 20);
+  font-size:medium;
+  border-radius: 3rem;
+  background-size: 50% auto;
+
+}
+.book-c{
+  width:100%;
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.h1div {
+  border: 1px solid black;
+  width: 100%;
+  background-color: #15172b;
+  border-radius: 20px;
+  color: white;
+  padding: 20px;
+  height:50%;
+}
+.not{
+  background-color:#08d;
+}
+
+.notifications {
+  flex: 1;
+}
+
+.books-taken {
+  flex: 1;
+}
